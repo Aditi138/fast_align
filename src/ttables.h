@@ -151,8 +151,24 @@ class TTable {
         const std::string& b = d.Convert(it.first);
         double c = log(it.second);
         if (c >= threshold)
-          file << a << '\t' << b << '\t' << c << std::endl;
+          file << a << '\t' << b << '\t' << it.second << std::endl;
       }
+    }
+    file.close();
+  }
+  void EntropyExportToFile(const char* filename, Dict& d, double BEAM_THRESHOLD) const {
+    std::ofstream file(filename);
+    for (unsigned i = 0; i < ttable.size(); ++i) {
+      const std::string& a = d.Convert(i);
+      const Word2Double& cpd = ttable[i];
+      double h = 0;
+      for (auto& it : cpd) {
+        double c = log(it.second);
+	h += it.second * c;
+
+      }
+      file << a << '\t' << -h << std::endl;
+      
     }
     file.close();
   }
